@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Gestor_Tareas
+{
+    public abstract class Tarea
+    {
+        //CAMPOS PROVADOS
+        private EstadoTarea _estado;
+        private string? _motivoCancelacion;
+
+        //PUBLICO
+        public Guid Id { get; }
+        public string Titulo { get; }
+        public string Descripcion { get; }
+        public DateTime FechaCreacion { get; }
+        public DateTime FechaLimite { get; }
+        public PrioridadTarea Prioridad { get; }
+
+        //SOLO LECTURA
+        public EstadoTarea Estado => _estado;
+
+        //CONSTRUCTOR CON VALIDACIONES
+
+        //Hacer FETCH antes que PULL
+        public Tarea(
+            string titulo,
+            DateTime fechaLimite,
+            PrioridadTarea prioridad, //Enum
+            string ? descripcion = null
+            )
+        {
+            //Tiutlo vacio?
+            if (string.IsNullOrWhiteSpace(titulo))
+                throw new ArgumentException("El titulo es obligatorio "
+                    , nameof(titulo));
+            //Fecha limite
+            if (fechaLimite.Date < DateTime.Today)
+                throw new ArgumentException("La fecha limite no puede ser anterior a hoy",
+                    nameof(fechaLimite));
+
+            Id = Guid.NewGuid();
+            Titulo = titulo.Trim();
+            Descripcion = descripcion?.Trim() ?? string.Empty;
+            FechaCreacion = DateTime.Now;
+            FechaLimite = fechaLimite.Date;
+            Prioridad = prioridad;
+            _estado = EstadoTarea.Pendiente;
+
+        }
+
+
+    }
+}
