@@ -1,0 +1,25 @@
+# Ignorar carpetas de compilación
+[Bb]in/
+[Oo]bj/
+
+# Ignorar archivos de usuario de Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignorar directorios de configuración de Visual Studio
+.vs/
+
+# Ignorar resultados de tests
+[Tt]est[Rr]esult*/
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Logs y bases de datos
+*.log
+*.svclog
+*.scc
+*.sqlite

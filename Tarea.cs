@@ -6,7 +6,7 @@ namespace Gestor_Tareas
 {
     public abstract class Tarea
     {
-        //CAMPOS PROVADOS
+        //CAMPOS PRIVADOS
         private EstadoTarea _estado;
         private string? _motivoCancelacion;
 
@@ -48,6 +48,31 @@ namespace Gestor_Tareas
             Prioridad = prioridad;
             _estado = EstadoTarea.Pendiente;
 
+        }
+
+        //METODOS NEGOCIO
+        public bool Iniciar()
+        {
+
+            if (_estado != EstadoTarea.Pendiente)
+                return false;
+            _estado = EstadoTarea.EnProgreso;
+            return true;
+        } 
+        public bool Completar()
+        {
+            if (_estado == EstadoTarea.Completada || _estado == EstadoTarea.Cancelada)
+                return false;
+            _estado = EstadoTarea.Completada;
+            return true;
+        }
+        public bool Cancelar(string motivo)
+        {
+            if (_estado == EstadoTarea.Cancelada)
+                return false;
+            _estado = EstadoTarea.Cancelada;
+            _motivoCancelacion = motivo ?? "Sin especificar";
+            return true;
         }
 
 
