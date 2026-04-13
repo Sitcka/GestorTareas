@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../Test/Test.csproj" Id="22d3128e-5b4b-4ed1-a7db-467a125765f1" />
   <Project Path="Gestor_Tareas.csproj" />
 </Solution>
