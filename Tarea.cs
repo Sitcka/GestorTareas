@@ -50,7 +50,7 @@ namespace Gestor_Tareas
 
         }
 
-        //METODOS NEGOCIO
+        //METODOS
         public bool Iniciar()
         {
 
@@ -74,6 +74,19 @@ namespace Gestor_Tareas
             _motivoCancelacion = motivo ?? "Sin especificar";
             return true;
         }
+
+        public bool EstaVencida() =>
+            _estado != EstadoTarea.Completada &&
+            _estado != EstadoTarea.Cancelada &&
+            DateTime.Today > FechaLimite;
+
+        public int DiasRestantes => (FechaLimite - DateTime.Today).Days;
+
+        //Metodo abstracto 
+        public abstract string ObtenerResumen();
+
+        //ToString sobreescrito
+        public override string ToString() => ObtenerResumen();
 
 
     }
