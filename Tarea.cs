@@ -31,7 +31,7 @@ namespace Gestor_Tareas
             string ? descripcion = null
             )
         {
-            //Tiutlo vacio?
+            //Tiutlo vacio
             if (string.IsNullOrWhiteSpace(titulo))
                 throw new ArgumentException("El titulo es obligatorio "
                     , nameof(titulo));
@@ -87,7 +87,6 @@ namespace Gestor_Tareas
 
         //ToString sobreescrito
         public override string ToString() => ObtenerResumen();
-
 
     }
 }
