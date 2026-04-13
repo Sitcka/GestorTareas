@@ -1,0 +1,107 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Gestor_Tareas
+{
+    public class GestorTareas
+    {
+
+        //Mantiene el orden de insercion
+        private readonly List<Tarea> _tareas;
+
+        //Busqueda de 0(1) por ID
+        /**
+         * El Dictionary permite una busqueda mas eficiente siendo sus claves unicas
+         */
+        private readonly Dictionary<Guid, Tarea> _indicePorId;
+
+        //Constante que servira para el archivo de persistencia
+        private const string ArchivoTareas = "tareas.json";
+
+        //Constructor con capacidad inicial
+        public GestorTareas(int capacidadInicial = 100)
+        {
+            _tareas = new List<Tarea>(capacidadInicial);
+            _indicePorId = new Dictionary<Guid, Tarea>(capacidadInicial);
+        }
+
+        //Agregar
+        public void AgregarTarea(Tarea tarea)
+        {
+            ArgumentNullException.ThrowIfNull(tarea);
+
+            if (_indicePorId.ContainsKey(tarea.Id))
+                throw new InvalidOperationException($"Ya existe una tarea con ID {tarea.Id}");
+            
+            //0(1)
+            _indicePorId.Add(tarea.Id, tarea);
+            //0(1) al final
+            _tareas.Add(tarea);
+
+        }
+
+
+        //Buscar por ID
+        public Tarea? BuscarPorId(Guid id)
+        {
+            return _indicePorId.GetValueOrDefault(id);
+        }
+
+        //Filtrar con predicado con uso de LINQ y Delegado FUNC
+        public IEnumerable<Tarea>Filtrar(Func<Tarea, bool> criterio)
+        {
+            return _tareas.Where(criterio);
+        }
+
+        //Obtiene todas las tareas (una interfaz, no la clase)
+        public IReadOnlyList<Tarea> ObtenerTodas()
+        {
+            return _tareas.AsReadOnly();
+        }
+
+        //Obtener por estado
+        public IEnumerable<Tarea>ObtenerPorEstado(EstadoTarea estado)
+        {
+            return _tareas.Where(t => t.Estado == estado);
+        }
+
+        //Obtener vencidas
+        public IEnumerable<Tarea> ObtenerVencidas()
+        {
+            return _tareas.Where(t => t.EstaVencida());
+        }
+
+        
+        //Obtener por prioritarias
+        public IEnumerable<Tarea>ObtenerPorPrioritarias(int n)
+        {
+            return _tareas
+                .OrderByDescending(t => t.Prioridad)
+                .ThenByDescending(
+                t => t is TareaPrioritaria tareaPrioritaria ? tareaPrioritaria.NivelUrgencia
+                : 0)
+                .Take(n);
+        }
+
+        //Eliminar por ID
+        public bool EliminarPorId(Guid id)
+        {
+            if (!_indicePorId.Remove(id, out var tarea))
+                return false;
+            return true;
+        }
+
+        //Obtener el total de las tareas
+        public int Total => _tareas.Count;
+
+        //Contar tareas
+        public Dictionary<EstadoTarea, int> ObtenerEstadisticas()
+        {
+            return _tareas
+                .GroupBy(tarea => tarea.Estado)
+                .ToDictionary(grupo => grupo.Key, grupo => grupo.Count());
+        }
+
+    }
+}
