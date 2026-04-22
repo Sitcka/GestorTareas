@@ -123,7 +123,7 @@ namespace Gestor_Tareas
         public void Cargar()
         {
             if (!File.Exists(ArchivoTareas))
-            
+
                 Console.WriteLine(
                     "No se encontro archivo de tareas previo. Iniciando vacio"
                     );
@@ -145,17 +145,43 @@ namespace Gestor_Tareas
                         $" {ArchivoTareas}");
 
                 }
-                
-            }
-            catch(JsonException ex)
-            {
-                Console.WriteLine($"Error al deserializar JSON: {ex.Message}");
+
             }
             catch (IOException ex)
             {
                 Console.WriteLine($"Error al leer el archivo: {ex.Message}");
             }
+            catch(JsonException ex)
+            {
+                Console.WriteLine($"Error al deserializar JSON: {ex.Message}");
+            }
 
+        }
+
+        public void MostrarTodas()
+        {
+            if(_tareas.Count == 0)
+            {
+                Console.WriteLine("No hay tareas registradas.");
+                return;
+            }
+
+            Console.WriteLine($"\n Lista de tareas ({_tareas.Count} total):");
+            Console.WriteLine(new string ('-', 60));
+
+            foreach (var tarea in _tareas)
+            {
+                Console.WriteLine(tarea.ObtenerResumen());
+            }
+
+            Console.WriteLine(new string('-', 60));
+
+            var stats = ObtenerEstadisticas();
+            Console.WriteLine($"Estadisticas: Pendientes:" +
+                $" {stats.GetValueOrDefault(EstadoTarea.Pendiente)} |" + $"En progreso: " +
+                $"{stats.GetValueOrDefault(EstadoTarea.EnProgreso)} | " + 
+                $"Completadas: {stats.GetValueOrDefault(EstadoTarea.Completada)} | " +
+                $"Canceladas: {stats.GetValueOrDefault(EstadoTarea.Cancelada)}");
         }
 
     }
