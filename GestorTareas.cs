@@ -106,6 +106,57 @@ namespace Gestor_Tareas
                 .GroupBy(tarea => tarea.Estado)
                 .ToDictionary(grupo => grupo.Key, grupo => grupo.Count());
         }
+        //Metodos con persistencia JSON
+        public void Guardar()
+        {
+            var opciones = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            string json = JsonSerializer.Serialize(_tareas, opciones);
+            File.WriteAllText(ArchivoTareas, json);
+            Console.WriteLine($"{_tareas.Count} tareas guardadas en {ArchivoTareas}");
+        }
+
+        public void Cargar()
+        {
+            if (!File.Exists(ArchivoTareas))
+            
+                Console.WriteLine(
+                    "No se encontro archivo de tareas previo. Iniciando vacio"
+                    );
+            return;
+
+            try
+            {
+                string json = File.ReadAllText(ArchivoTareas);
+                var tareasCargadas = JsonSerializer.Deserialize<List<Tarea>>(json);
+
+                if (tareasCargadas != null)
+                {
+                    foreach (var tarea in tareasCargadas)
+                    {
+                        _indicePorId.TryAdd(tarea.Id, tarea);
+                        _tareas.Add(tarea);
+                    }
+                    Console.WriteLine($"Cargadas {tareasCargadas.Count} tareas desdde" +
+                        $" {ArchivoTareas}");
+
+                }
+                
+            }
+            catch(JsonException ex)
+            {
+                Console.WriteLine($"Error al deserializar JSON: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Error al leer el archivo: {ex.Message}");
+            }
+
+        }
 
     }
 }
