@@ -39,7 +39,7 @@ namespace Gestor_Tareas
         //Metodo heredado de la clase abstracta
         public override string ObtenerResumen()
         {
-            return $"[Recurrente cada {IntervaloDias} dias {Titulo} | {Estado}| Vence: " +
+            return $"[Recurrente cada {IntervaloDias} dias] {Titulo} | {Estado}| Vence: " +
                 $"{FechaLimite:dd/MM/yy} | Proxima: {ProximaOcurrencia?.ToString("dd/MM/yy") ??
                 "N/A"}";
         }
