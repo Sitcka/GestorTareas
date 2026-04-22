@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;          
+using System.Linq;        
+using System.Text.Json;    
+
 
 namespace Gestor_Tareas
 {
@@ -63,13 +67,13 @@ namespace Gestor_Tareas
         //Obtener por estado
         public IEnumerable<Tarea>ObtenerPorEstado(EstadoTarea estado)
         {
-            return _tareas.Where(t => t.Estado == estado);
+            return _tareas.Where(tarea => tarea.Estado == estado);
         }
 
         //Obtener vencidas
         public IEnumerable<Tarea> ObtenerVencidas()
         {
-            return _tareas.Where(t => t.EstaVencida());
+            return _tareas.Where(tarea => tarea.EstaVencida());
         }
 
         
@@ -77,9 +81,9 @@ namespace Gestor_Tareas
         public IEnumerable<Tarea>ObtenerPorPrioritarias(int n)
         {
             return _tareas
-                .OrderByDescending(t => t.Prioridad)
+                .OrderByDescending(tarea => tarea.Prioridad)
                 .ThenByDescending(
-                t => t is TareaPrioritaria tareaPrioritaria ? tareaPrioritaria.NivelUrgencia
+                tarea => tarea is TareaPrioritaria tareaPrioritaria ? tareaPrioritaria.NivelUrgencia
                 : 0)
                 .Take(n);
         }
