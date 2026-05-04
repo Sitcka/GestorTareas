@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;          
 using System.Linq;        
-using System.Text.Json;    
+using System.Text.Json;
 
-
+//Lo importante es la encapsulacion
 namespace Gestor_Tareas
 {
     public class GestorTareas
@@ -93,7 +93,7 @@ namespace Gestor_Tareas
         {
             if (!_indicePorId.Remove(id, out var tarea))
                 return false;
-            return true;
+            return _tareas.Remove(tarea);
         }
 
         //Obtener el total de las tareas
@@ -123,11 +123,14 @@ namespace Gestor_Tareas
         public void Cargar()
         {
             if (!File.Exists(ArchivoTareas))
+            {
 
                 Console.WriteLine(
                     "No se encontro archivo de tareas previo. Iniciando vacio"
                     );
-            return;
+                return;
+            }
+
 
             try
             {

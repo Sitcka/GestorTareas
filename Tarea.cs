@@ -23,7 +23,6 @@ namespace Gestor_Tareas
 
         //CONSTRUCTOR CON VALIDACIONES
 
-        //Hacer FETCH antes que PULL
         public Tarea(
             string titulo,
             DateTime fechaLimite,
