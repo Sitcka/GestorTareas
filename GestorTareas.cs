@@ -95,7 +95,7 @@ namespace Gestor_Tareas
                 return false;
             return _tareas.Remove(tarea);
         }
-
+        
         //Obtener el total de las tareas
         public int Total => _tareas.Count;
 
