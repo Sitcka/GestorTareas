@@ -1,0 +1,48 @@
+.
+|--- .git
+|--- .github
+|   |--- workflows
+|--- .vs
+|   |--- GestorTareas.slnx
+|   |   |--- DesignTimeBuild
+|   |   |--- FileContentIndex
+|   |   |--- v18
+|   |   |   |--- TestStore
+|   |   |   |   |--- 0
+|   |--- Gestor_Tareas.slnx
+|   |   |--- DesignTimeBuild
+|   |   |--- FileContentIndex
+|   |--- ProjectEvaluation
+|   |--- sd
+|--- bin
+|--- obj
+|--- Properties
+|--- src
+|   |--- API
+|   |   |--- bin
+|   |   |--- Controllers
+|   |   |--- Extensions
+|   |   |--- obj
+|   |   |--- Properties
+|   |--- Application
+|   |   |--- bin
+|   |   |--- DTOs
+|   |   |--- Interfaces
+|   |   |--- obj
+|   |   |--- Services
+|   |--- Domain
+|   |   |--- bin
+|   |   |--- Entities
+|   |   |--- Enums
+|   |   |--- obj
+|   |--- Infrastructure
+|   |   |--- bin
+|   |   |--- Data
+|   |   |--- Middleware
+|   |   |--- obj
+|   |   |--- Repositories
+|--- tests
+|   |--- Application.Tests
+|   |--- Domain.Tests
+|   |   |--- bin
+|   |   |--- obj
