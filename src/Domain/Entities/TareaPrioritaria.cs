@@ -1,21 +1,21 @@
-﻿using Domain.Entities;
-using Domain.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Domain.Enums;
 
 namespace Domain.Entities;
 
 public class TareaPrioritaria : Tarea
 {
-    public int NivelUrgencia { get; }
+    public int NivelUrgencia { get; private set; }
     public TareaPrioritaria(
         string titulo,
         DateTime fechaLimite,
         PrioridadTarea prioridad,
         int nivelUrgencia,
+        int usuarioId,
         string? descripcion = null)
-        : base(titulo, fechaLimite, prioridad, descripcion)
+        : base(titulo, fechaLimite, prioridad, usuarioId, descripcion)
     {
         if (nivelUrgencia < 1 || nivelUrgencia > 10)
             throw new ArgumentException("El nivel de urgencia debe " +
@@ -23,15 +23,4 @@ public class TareaPrioritaria : Tarea
         NivelUrgencia = nivelUrgencia;
     }
 
-    public override string ObtenerResumen()
-    {
-        string indicador = NivelUrgencia switch
-        {
-            >= 8 => "🔴🔴🔴",
-            >= 5 => "🟡🟡",
-            _ => "🟢"
-        };
-        return $"{indicador} [Urgente {NivelUrgencia}/10]" +
-            $" {Titulo} | {Estado} | Vence: {FechaLimite:dd//MM/yy}";
-    }
 }

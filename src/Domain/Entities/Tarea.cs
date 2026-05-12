@@ -1,78 +1,89 @@
 ﻿using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Domain.Entities;
-
 
 public abstract class Tarea
 {
-    //CAMPOS PRIVADOS
     private EstadoTarea _estado;
     private string? _motivoCancelacion;
 
-    //PUBLICO
-    public Guid Id { get; }
-    public string Titulo { get; }
-    public string Descripcion { get; }
-    public DateTime FechaCreacion { get; }
-    public DateTime FechaLimite { get; }
-    public PrioridadTarea Prioridad { get; }
+    //Constructor protegido
+    protected Tarea() { }
 
-    //SOLO LECTURA
-    public EstadoTarea Estado => _estado;
-
-    //CONSTRUCTOR CON VALIDACIONES
-
-    public Tarea(
+    protected Tarea(
         string titulo,
         DateTime fechaLimite,
-        PrioridadTarea prioridad, //Enum
-        string? descripcion = null
-        )
+        PrioridadTarea prioridad,
+        int usuarioId,
+        string? descripcion = null)
     {
-        //Tiutlo vacio
         if (string.IsNullOrWhiteSpace(titulo))
-            throw new ArgumentException("El titulo es obligatorio "
-                , nameof(titulo));
-        //Fecha limite
-        if (fechaLimite.Date < DateTime.Today)
-            throw new ArgumentException("La fecha limite no puede ser anterior a hoy",
-                nameof(fechaLimite));
+        {
+            throw new ArgumentException("El título es obligatorio.", nameof(titulo));
+        }
 
-        Id = Guid.NewGuid();
+        if (fechaLimite.Date < DateTime.Today)
+        {
+            throw new ArgumentException("La fecha límite no puede ser anterior a hoy.", nameof(fechaLimite));
+        }
+
+        if(usuarioId <= 0)
+        {
+            throw new ArgumentException("El usuario es obligatorio.", nameof(usuarioId));
+        }
+
         Titulo = titulo.Trim();
-        Descripcion = descripcion?.Trim() ?? string.Empty;
-        FechaCreacion = DateTime.Now;
+        Descripcion = string.IsNullOrWhiteSpace(descripcion) ? null : descripcion.Trim();
+        FechaCreacion = DateTime.UtcNow;
         FechaLimite = fechaLimite.Date;
         Prioridad = prioridad;
+        UsuarioId = usuarioId;
         _estado = EstadoTarea.Pendiente;
-
     }
 
-    //METODOS
+    public int Id { get; private set; }
+    public string Titulo { get; private set; } = string.Empty;
+    public string? Descripcion { get; private set; }
+    public DateTime FechaCreacion { get; private set; }
+    public DateTime FechaLimite { get; private set; }
+    public PrioridadTarea Prioridad { get; private set; }
+    public EstadoTarea Estado => _estado;
+    public string? MotivoCancelacion => _motivoCancelacion;
+
+    //Relacion con Usuario
+    public int UsuarioId { get; private set; }
+    public Usuario Usuario { get; private set; } = null!;
+
     public bool Iniciar()
     {
-
         if (_estado != EstadoTarea.Pendiente)
+        {
             return false;
+        }
+
         _estado = EstadoTarea.EnProgreso;
         return true;
     }
+
     public bool Completar()
     {
         if (_estado == EstadoTarea.Completada || _estado == EstadoTarea.Cancelada)
+        {
             return false;
+        }
+
         _estado = EstadoTarea.Completada;
         return true;
     }
+
     public bool Cancelar(string motivo)
     {
         if (_estado == EstadoTarea.Cancelada)
+        {
             return false;
+        }
+
         _estado = EstadoTarea.Cancelada;
-        _motivoCancelacion = motivo ?? "Sin especificar";
+        _motivoCancelacion = string.IsNullOrWhiteSpace(motivo) ? "Sin especificar" : motivo.Trim();
         return true;
     }
 
@@ -81,12 +92,21 @@ public abstract class Tarea
         _estado != EstadoTarea.Cancelada &&
         DateTime.Today > FechaLimite;
 
-    public int DiasRestantes => (FechaLimite - DateTime.Today).Days;
+    public void ActualizarDescripcion(string? descripcion)
+    {
+        Descripcion = string.IsNullOrWhiteSpace(descripcion) ? null : descripcion.Trim();
+    }
 
-    //Metodo abstracto 
-    public abstract string ObtenerResumen();
+    public void ActualizarFechaLimite(DateTime fechaLimite)
+    {
+        if(fechaLimite.Date < DateTime.Today)
+        {
+            throw new ArgumentException("La fecha no puede ser anterior a la de hoy", 
+                nameof(fechaLimite));
+        }
+        FechaLimite = fechaLimite.Date;
+    }
 
-    //ToString sobreescrito
-    public override string ToString() => ObtenerResumen();
+    public int ObtenerDiasRestantes => (FechaLimite - DateTime.Today).Days;
 
 }
