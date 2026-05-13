@@ -1,8 +1,14 @@
-﻿using System;
+﻿using Application.DTOs;
 
-public class Class1
+namespace Application.Interfaces;
+
+public interface IUsuarioService
 {
-	public Class1()
-	{
-	}
+    UsuarioResponseDto CrearUsuario(CrearUsuarioDto dto);
+
+    List<UsuarioResponseDto> ObtenerTodos();
+
+    UsuarioResponseDto? ObtenerPorId(int id);
+
+    bool Eliminar(int id);
 }

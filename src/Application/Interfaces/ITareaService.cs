@@ -1,8 +1,24 @@
-﻿using System;
+﻿using Application.DTOs;
 
-public class Class1
+namespace Application.Interfaces;
+
+public interface ITareaService
 {
-	public Class1()
-	{
-	}
+    TareaSimpleResponseDto CrearTareaSimple(CrearTareaSimpleDto dto);
+
+    TareaPrioritariaResponseDto CrearTareaPrioritaria(CrearTareaPrioritariaDto dto);
+
+    TareaRecurrenteResponseDto CrearTareaRecurrente(CrearTareaRecurrenteDto dto);
+
+    List<TareaResponseDto> ObtenerTodas();
+
+    TareaResponseDto? ObtenerPorId(int id);
+
+    List<TareaResponseDto> ObtenerPendientes();
+
+    List<TareaResponseDto> ObtenerPorUsuarioId(int usuarioId);
+
+    bool MarcarComoCompletada(int id);
+
+    bool Eliminar(int id);
 }
