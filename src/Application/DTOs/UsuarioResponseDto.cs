@@ -1,8 +1,9 @@
-﻿using System;
+﻿namespace Application.DTOs;
 
-public class Class1
+public class UsuarioResponseDto
 {
-	public Class1()
-	{
-	}
+    public int Id { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public bool EsAdmin { get; set; }
 }
