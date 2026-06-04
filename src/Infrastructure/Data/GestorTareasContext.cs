@@ -24,7 +24,7 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.HasKey(usuario => usuario.Id);
-
+                entity.HasIndex(usuario => usuario.Email).IsUnique();
                 entity.Property(usuario => usuario.Nombre)
                 .IsRequired()
                 .HasMaxLength(100);

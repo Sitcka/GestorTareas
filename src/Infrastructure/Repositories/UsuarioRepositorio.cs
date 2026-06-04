@@ -45,7 +45,7 @@ public class UsuarioRepositorio : IUsuarioRepositorio
 
     public async Task<Usuario?> GetByIdAsync(int id)
     {
-        return await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return await _context.Usuarios.FindAsync(id);
     }
 
     public async Task UpdateAsync(Usuario usuario)
