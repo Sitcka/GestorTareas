@@ -1,101 +1,97 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories;
 
 public class TareaRepositorio : ITareaRepositorio
 {
-	private readonly GestorTareasDbContext _context;
+    private readonly GestorTareasDbContext _contexto;
 
-	public TareaRepositorio(GestorTareasDbContext context)
-	{
-		_context = context;
-	}
+    public TareaRepositorio(GestorTareasDbContext contexto)
+    {
+        _contexto = contexto;
+    }
 
-	public async Task AddAsync(Tarea tarea)
-	{
-		await _context.Tareas.AddAsync(tarea);
-		await _context.SaveChangesAsync();
-	}
+    public async Task<List<Tarea>> GetAllAsync()
+    {
+        return await _contexto.Tareas
+            .Include(tarea => tarea.Usuario)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 
-	public async Task<bool> DeleteAsync(int id)
-	{
-		var entidad = await _context.Tareas.FindAsync(id);
-		if (entidad is null) return false;
-		_context.Tareas.Remove(entidad);
-		await _context.SaveChangesAsync();
-		return true;
-	}
+    public async Task<Tarea?> GetByIdAsync(int id)
+    {
+        return await _contexto.Tareas
+            .Include(tarea => tarea.Usuario)
+            .FirstOrDefaultAsync(tarea => tarea.Id == id);
+    }
 
-	public async Task<IEnumerable<Tarea>> GetAllAsync()
-	{
-		return await _context.Tareas
-			.Include(t => t.Usuario)
-			.AsNoTracking()
-			.ToListAsync();
-	}
+    public async Task AddAsync(Tarea tarea)
+    {
+        await _contexto.Tareas.AddAsync(tarea);
+        await _contexto.SaveChangesAsync();
+    }
 
-	public async Task<(IEnumerable<Tarea> Items, int TotalCount)> GetPagedAsync(int pageNumber, int pageSize)
-	{
-		if (pageNumber < 1) pageNumber = 1;
-		if (pageSize < 1) pageSize = 10;
+    public async Task UpdateAsync(Tarea tarea)
+    {
+        _contexto.Tareas.Update(tarea);
+        await _contexto.SaveChangesAsync();
+    }
 
-		var query = _context.Tareas
-			.Include(t => t.Usuario)
-			.AsNoTracking();
-		var total = await query.CountAsync();
-		var items = await query
-			.OrderBy(t => t.Id)
-			.Skip((pageNumber - 1) * pageSize)
-			.Take(pageSize)
-			.ToListAsync();
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var tarea = await _contexto.Tareas.FirstOrDefaultAsync(tarea => tarea.Id == id);
+        if (tarea is null) return false;
 
-		return (items, total);
-	}
+        _contexto.Tareas.Remove(tarea);
+        await _contexto.SaveChangesAsync();
+        return true;
+    }
 
-	public async Task<Tarea?> GetByIdAsync(int id)
-	{
-		return await _context.Tareas
-			.Include(t => t.Usuario)
-			.AsNoTracking()
-			.FirstOrDefaultAsync(t => t.Id == id);
-	}
+    public async Task<(List<Tarea> Items, int Total)> GetPagedAsync(int pageNumber, int pageSize)
+    {
+        var query = _contexto.Tareas
+            .Include(tarea => tarea.Usuario)
+            .AsNoTracking();
 
-	public async Task<IEnumerable<Tarea>> GetByUsuarioAsync(int usuarioId)
-	{
-		return await _context.Tareas
-			.Include(t => t.Usuario)
-			.AsNoTracking()
-			.Where(t => t.UsuarioId == usuarioId)
-			.ToListAsync();
-	}
+        var total = await query.CountAsync();
 
-	public async Task<(IEnumerable<Tarea> Items, int TotalCount)> GetPagedByUsuarioAsync(int usuarioId, int pageNumber, int pageSize)
-	{
-		if (pageNumber < 1) pageNumber = 1;
-		if (pageSize < 1) pageSize = 10;
+        var items = await query
+            .OrderBy(tarea => tarea.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
-		var query = _context.Tareas
-			.Include(t => t.Usuario)
-			.AsNoTracking()
-			.Where(t => t.UsuarioId == usuarioId);
-		var total = await query.CountAsync();
-		var items = await query
-			.OrderBy(t => t.Id)
-			.Skip((pageNumber - 1) * pageSize)
-			.Take(pageSize)
-			.ToListAsync();
+        return (items, total);
+    }
 
-		return (items, total);
-	}
+    public async Task<List<Tarea>> GetByUsuarioAsync(int usuarioId)
+    {
+        return await _contexto.Tareas
+            .Include(tarea => tarea.Usuario)
+            .AsNoTracking()
+            .Where(tarea => tarea.UsuarioId == usuarioId)
+            .ToListAsync();
+    }
 
-	public async Task UpdateAsync(Tarea tarea)
-	{
-		_context.Tareas.Update(tarea);
-		await _context.SaveChangesAsync();
-	}
+    public async Task<(List<Tarea> Items, int Total)> GetPagedByUsuarioAsync(int usuarioId, int pageNumber, int pageSize)
+    {
+        var query = _contexto.Tareas
+            .Include(tarea => tarea.Usuario)
+            .AsNoTracking()
+            .Where(tarea => tarea.UsuarioId == usuarioId);
+
+        var total = await query.CountAsync();
+
+        var items = await query
+            .OrderBy(tarea => tarea.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, total);
+    }
 }
