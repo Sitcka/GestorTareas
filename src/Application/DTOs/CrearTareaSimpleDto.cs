@@ -12,6 +12,7 @@ public class CrearTareaSimpleDto
     [Required(ErrorMessage = "La prioridad para la tarea es obligatoria.")]
     public PrioridadTarea Prioridad { get; set; }
     [Range(1, int.MaxValue, ErrorMessage = "UsuarioId debe ser mayor que 0.")]
+    [Required(ErrorMessage = "No existe ningun usuario con ese Id")]
     public int UsuarioId { get; set; }
     [MaxLength(300, ErrorMessage = "La descripcion no puede superar los 300 caracteres.")]
     public string? Descripcion { get; set; }
