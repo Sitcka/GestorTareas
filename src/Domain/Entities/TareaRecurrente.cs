@@ -8,8 +8,9 @@ namespace Domain.Entities;
 
 public class TareaRecurrente : Tarea
 {
-    public int IntervaloDias { get; }
+    public int IntervaloDias { get; private set; }
     public DateTime ProximaOcurrencia { get; private set; }
+
     public TareaRecurrente(
         string titulo,
         DateTime fechaLimite,
@@ -24,6 +25,7 @@ public class TareaRecurrente : Tarea
             throw new ArgumentException("El intervalo debe de ser mayor a 0 dias.",
                 nameof(intervaloDias));
         }
+
         IntervaloDias = intervaloDias;
         ProximaOcurrencia = fechaLimite.AddDays(intervaloDias);
     }
@@ -44,4 +46,15 @@ public class TareaRecurrente : Tarea
             Descripcion);
     }
 
+    public void ActualizarIntervaloDias(int intervaloDias)
+    {
+        if (intervaloDias < 1)
+        {
+            throw new ArgumentException("El intervalo debe de ser mayor a 0 dias.",
+                nameof(intervaloDias));
+        }
+
+        IntervaloDias = intervaloDias;
+        ProximaOcurrencia = FechaLimite.AddDays(intervaloDias);
+    }
 }

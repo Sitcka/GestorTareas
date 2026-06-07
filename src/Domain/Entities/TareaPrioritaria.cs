@@ -23,4 +23,11 @@ public class TareaPrioritaria : Tarea
         NivelUrgencia = nivelUrgencia;
     }
 
+    public void ActualizarNivelUrgencia(int nivelUrgencia)
+    {
+        if (nivelUrgencia < 1 || nivelUrgencia > 10)
+            throw new ArgumentException("El nivel de urgencia debe estar entre 1 y 10", nameof(nivelUrgencia));
+        NivelUrgencia = nivelUrgencia;
+    }
+
 }
